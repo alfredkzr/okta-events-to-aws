@@ -1,2 +1,4 @@
-# okta-events-to-aws
-Tutorial on how to send and process Okta event hooks within AWS
+# Introduction
+In this tutorial, I will show you how to integrate Okta event hooks with AWS API Gateway and process basic functions using Lambda.
+
+[Placeholder]
