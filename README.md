@@ -11,7 +11,11 @@ If you don't have an Okta account, you can sign up for developer account to try 
 
 1. Set up event hooks
 2. Verify event hook
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/67287ef7cdeb9582243b4638f83a8602182127d4/Okta/okta-verify-event-hook.png)
+- Please refer to the official docs about verifying event hook. https://developer.okta.com/docs/concepts/event-hooks/#one-time-verification-request
+The way your service needs to handle this one-time verification is as follows: The request from Okta contains an HTTP header named x-okta-verification-challenge. Your service needs to read the value of that header and return it in the response body, in a JSON object named verification: that is: { "verification" : "value_from_header" }. The value_from_header is found in the request HTTP header, but you need to send it back in a JSON object.
 3. Add events to event hooks endpoint
+- Add 
 
 ## AWS Setup
 Let's create a few AWS services to make this happen.
