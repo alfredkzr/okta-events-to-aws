@@ -13,18 +13,19 @@ Let's create a few AWS services to make this happen.
 - Create 1 Lambda for returning the challenge response back to Okta event hook endpoint to verify.
 ```events-hook-veriifer.py```
 - Create 1 Lambda for to server as a the authoriser for the APIGW. We will only use this once to verify endpoint.
-```api-authoriser.py```
+```events-hook-verifier.py```
 - Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user suspension as per this demo.
-```main.py```
+```suspend-iam-user.py```
 
 2. AWS API Gateway
 - Create 1 REST API Gateway.
 - Create authoriser and link it to your lambda authoriser function.
 - Create resource 
-- Create ```POST``` method
+- Create ```POST``` method and then link to the Lambda with ```suspend-iam-user.py```
+- Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
 
 3. AWS IAM
-- Create an IAM user
+- Create an IAM user with same Okta username for suspension demonstation.
 
 ## Part B: Okta Setup
 If you don't have an Okta account, you can sign up for developer account to try it out.
