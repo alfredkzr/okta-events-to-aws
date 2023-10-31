@@ -23,6 +23,8 @@ Let's create a few AWS services to make this happen.
 - Create resource 
 - Create ```POST``` method and then link to the Lambda with ```suspend-iam-user.py```
 - Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
+- Go to Authorizers and create a new authorizer and the link to the Lambda with ```api-authoriser```. Enter authorizationToken as the Token Source.
+- Add the authorizer to your ```POST``` method which you have just created earlier.
 
 3. AWS IAM
 - Create an IAM user with same Okta username for suspension demonstation.
