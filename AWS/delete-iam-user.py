@@ -70,6 +70,7 @@ def lambda_handler(event, context):
                 'statusCode': 200,
                 'body': 'IAM user deleted successfully.'
             }
+            print(f"IAM user, {username_to_delete}, deleted")
         except Exception as e:
             response = {
                 'statusCode': 500,

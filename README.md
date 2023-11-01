@@ -22,11 +22,13 @@ Let's create a few AWS services to make this happen.
 2. AWS API Gateway
 - Create 1 REST API Gateway.
 - Create authoriser and link it to your lambda authoriser function.
-- Create resource 
+- Create resource
 - Create ```POST``` method and then link to the Lambda with ```delete-iam-user.py```
 - Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
 - Go to Authorizers and create a new authorizer and the link to the Lambda with ```api-authoriser```. Enter authorizationToken as the Token Source.
 - Add the authorizer to your ```POST``` method which you have just created earlier.
+
+In short, Okta events hook will perform API call GET > events-hook-verifier lambda (1 time event for verification) and POST > api-authoriser > delete-iam-user.
 
 3. AWS IAM
 - Create an IAM user with same Okta username for suspension demonstation.
