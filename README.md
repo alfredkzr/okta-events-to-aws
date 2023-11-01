@@ -4,7 +4,9 @@ I will show you how to integrate Okta event hooks with AWS API Gateway and proce
 # Example
 We will use a simple example to demonstrate the integration between Okta and AWS.
 
-In this scenarion, we will create an automation to suspend the AWS IAM user when Okta user is suspended. Obviously having IAM user is not exactly a good practice but you may still be using it for certain situation.
+In this scenarion, we will create an automation to delete the corresponding AWS IAM user when Okta user is suspended. Obviously having IAM user is not a good practice but you may still be using it for certain situation.
+
+For example, when demo@
 
 ## Part A: AWS Setup
 Let's create a few AWS services to make this happen.
@@ -14,14 +16,14 @@ Let's create a few AWS services to make this happen.
 ```events-hook-veriifer.py```
 - Create 1 Lambda for to server as a the authoriser for the APIGW. We will only use this once to verify endpoint.
 ```events-hook-verifier.py```
-- Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user suspension as per this demo.
-```suspend-iam-user.py```
+- Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user deletion as per this demo.
+```delete-iam-user.py```
 
 2. AWS API Gateway
 - Create 1 REST API Gateway.
 - Create authoriser and link it to your lambda authoriser function.
 - Create resource 
-- Create ```POST``` method and then link to the Lambda with ```suspend-iam-user.py```
+- Create ```POST``` method and then link to the Lambda with ```delete-iam-user.py```
 - Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
 - Go to Authorizers and create a new authorizer and the link to the Lambda with ```api-authoriser```. Enter authorizationToken as the Token Source.
 - Add the authorizer to your ```POST``` method which you have just created earlier.
