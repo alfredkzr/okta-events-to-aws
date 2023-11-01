@@ -25,7 +25,9 @@ Let's create a few AWS services to make this happen.
 - Create resource.
 
 - Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
-- For the GET method, you will need to add in mapping template. Go to integration request and then under mapping template, type in 
+- For the GET method, you will need to add in mapping template to get the headers. Go to integration request and then under mapping template, type in ```application/json```. Generate template > Method request passthrough.
+
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/b1939c7193cc27a208387109923a207cd7bebc81/AWS/screenshots/mapping-template.png)
 
 - Create ```POST``` method and then link to the Lambda with ```delete-iam-user.py```
 
