@@ -13,7 +13,7 @@ Let's create a few AWS services to make this happen.
 - Create 1 Lambda for returning the challenge response back to Okta event hook endpoint to verify.
 ```events-hook-veriifer.py```
 - Create 1 Lambda for to server as a the authoriser for the APIGW. We will only use this once to verify endpoint.
-```events-hook-verifier.py```
+```api-authoriser.py```
 - Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user deletion as per this demo.
 ```delete-iam-user.py```
 ![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/lambda-functions.png)
