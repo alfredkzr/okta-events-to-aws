@@ -18,10 +18,12 @@ Let's create a few AWS services to make this happen.
 ```events-hook-verifier.py```
 - Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user deletion as per this demo.
 ```delete-iam-user.py```
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/lambda-functions.png)
 
 2. AWS API Gateway
 - Create 1 REST API Gateway.
 - Create authoriser and link it to your lambda authoriser function.
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/api-authoriser.png)
 - Create resource
 - Create ```POST``` method and then link to the Lambda with ```delete-iam-user.py```
 - Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
@@ -29,6 +31,8 @@ Let's create a few AWS services to make this happen.
 - Add the authorizer to your ```POST``` method which you have just created earlier.
 
 In short, Okta events hook will perform API call GET > events-hook-verifier lambda (1 time event for verification) and POST > api-authoriser > delete-iam-user.
+
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/rest-api.png)
 
 3. AWS IAM
 - Create an IAM user with same Okta username for suspension demonstation.
@@ -53,5 +57,12 @@ The way your service needs to handle this one-time verification is as follows: T
 3. Add events to event hooks endpoint.
 - For this demo, subscribe to event ```User suspended```
 ![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/368457bd064cef0f0129080a518262b7a98b83c1/Okta/okta-event-subscription.png)
+
+# Test it
+Now create a Okta user with same username as IAM user then suspend it.
+It should now automatically delete the IAM user from your AWS account.
+
+Example screenshot from Cloudwatch logs
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/iam-user-deleted.png)
 
 
