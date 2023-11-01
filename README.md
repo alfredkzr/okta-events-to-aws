@@ -6,8 +6,6 @@ We will use a simple example to demonstrate the integration between Okta and AWS
 
 In this scenarion, we will create an automation to delete the corresponding AWS IAM user when Okta user is suspended. Obviously having IAM user is not a good practice but you may still be using it for certain situation.
 
-For example, when demo@
-
 ## Part A: AWS Setup
 Let's create a few AWS services to make this happen.
 
@@ -32,6 +30,7 @@ Let's create a few AWS services to make this happen.
 
 In short, Okta events hook will perform API call GET > events-hook-verifier lambda (1 time event for verification) and POST > api-authoriser > delete-iam-user.
 
+Example screenshot(Please ignore the resource name as I meant to create it as delete-iam-user instead of suspend-iam-user)
 ![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/rest-api.png)
 
 3. AWS IAM
