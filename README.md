@@ -2,9 +2,9 @@
 I will show you how to integrate Okta event hooks with AWS API Gateway and process functions using Lambda. Okta workflows is great but you may know it's a very expensive feature so we shall write our own code and build our infra on AWS to make awesome workflows.
 
 # Example
-We will use a simple example to demonstrate the integration between Okta and AWS.
+Let's use a simple example to demonstrate the integration between Okta and AWS.
 
-In this scenarion, we will create an automation to delete the corresponding AWS IAM user when Okta user is suspended. Obviously having IAM user is not a good practice but you may still be using it for certain situation.
+In this scenario, we will create an automation to delete the corresponding AWS IAM user when Okta user is suspended. Obviously having IAM user is not a good practice but you may still be using it for certain situation.
 
 ## Part A: AWS Setup
 Let's create a few AWS services to make this happen.
@@ -12,20 +12,23 @@ Let's create a few AWS services to make this happen.
 1. AWS Lambda
 - Create 1 Lambda for returning the challenge response back to Okta event hook endpoint to verify.
 ```events-hook-veriifer.py```
-- Create 1 Lambda for to server as a the authoriser for the APIGW. We will only use this once to verify endpoint.
+- Create 1 Lambda to serve as the authoriser for the APIGW.
 ```api-authoriser.py```
-- Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user deletion as per this demo.
+- Create 1 Lambda that will be the main function to process Okta event and also the AWS IAM user deletion.
 ```delete-iam-user.py```
 ![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/lambda-functions.png)
 
 2. AWS API Gateway
 - Create 1 REST API Gateway.
-- Create authoriser and link it to your lambda authoriser function.
-![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/api-authoriser.png)
-- Create resource
-- Create ```POST``` method and then link to the Lambda with ```delete-iam-user.py```
-- Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
 - Go to Authorizers and create a new authorizer and the link to the Lambda with ```api-authoriser```. Enter authorizationToken as the Token Source.
+![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/api-authoriser.png)
+- Create resource.
+
+- Create ```GET``` method and then link to the Lambda with ```events-hooker-verifier```
+- For the GET method, you will need to add in mapping template. Go to integration request and then under mapping template, type in 
+
+- Create ```POST``` method and then link to the Lambda with ```delete-iam-user.py```
+
 - Add the authorizer to your ```POST``` method which you have just created earlier.
 
 In short, Okta events hook will perform API call GET > events-hook-verifier lambda (1 time event for verification) and POST > api-authoriser > delete-iam-user.
@@ -63,5 +66,8 @@ It should now automatically delete the IAM user from your AWS account.
 
 Example screenshot from Cloudwatch logs
 ![alt text](https://github.com/alfredkzr/okta-events-to-aws/blob/68bb9c0f10198ce06562e761fec22fb306f17357/AWS/screenshots/iam-user-deleted.png)
+
+# Others
+To enhance security posture, you can also opt to throttle your APIGW and add in IP restrictions to Okta only.
 
 
