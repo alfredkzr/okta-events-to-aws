@@ -7,13 +7,15 @@ def lambda_handler(event, context):
     print('*********** The event is: ***************')
     print(event)
 
-    # 2 - Check if the secret is correct.
+    # 2 - Check if the secret is correct. 
+    # TODO - Please change it to your own secret. It's recommended to store it in secrets manager instead.
     if event['authorizationToken'] == 'VeryStrongSecret123':
         auth = 'Allow'
     else:
         auth = 'Deny'
 
-    # 3 - Construct and return the response. Please change the ARN to your APIGW POST method.
+    # 3 - Construct and return the response to either allow or deny the permission to invoke the API.
+    # TODO - Please change the ARN to your APIGW POST method instead.
     authResponse = {"principalId": "suspend-iam-user", "policyDocument": {"Version": "2012-10-17", "Statement": [
         {"Action": "execute-api:Invoke", "Resource": ["arn:aws:execute-api:ap-southeast-1:AWS-ACCOUNT-NUMBER:pk6s3cmxr4/*/POST/suspend-iam-user"], "Effect": auth}]}}
     return authResponse

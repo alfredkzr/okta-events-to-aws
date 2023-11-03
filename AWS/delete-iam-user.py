@@ -3,6 +3,11 @@ import boto3
 def delete_user_and_dependencies(username):
     iam = boto3.client('iam')
 
+    """
+    In order to delete AWS IAM user, it's compulsory to remove the following attachments on the user account before deletion.
+    Please refer to boto3 documentation on client.delete_user() for more information.
+    """
+
     # 1. Remove user from any groups
     response = iam.list_groups_for_user(UserName=username)
     for group in response['Groups']:
@@ -56,11 +61,11 @@ def delete_user_and_dependencies(username):
 
 def lambda_handler(event, context):
 
+    #iterate through the events list received from Okta event hook.
     for event in event['data']['events']:
-    
         # IAM username of the user you want to suspend
         username_to_delete = event['target'][0]['alternateId']
-        print(f"Deleting {username_to_delete}")
+        print(f"Deleting {username_to_delete} IAM user")
         iam = boto3.client('iam')
         
         try:
@@ -70,7 +75,7 @@ def lambda_handler(event, context):
                 'statusCode': 200,
                 'body': 'IAM user deleted successfully.'
             }
-            print(f"IAM user, {username_to_delete}, deleted")
+            print(f"The IAM user, {username_to_delete}, has been deleted succesfully!")
         except Exception as e:
             response = {
                 'statusCode': 500,
