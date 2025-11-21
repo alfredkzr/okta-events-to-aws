@@ -712,17 +712,6 @@ aws lambda update-function-configuration \
 
 ---
 
-## Scaling Considerations
-
-Okta has a limited number of event hook endpoints. To scale this integration:
-
-1. **Multiple event types**: Process different event types in the same Lambda
-2. **Step Functions**: Orchestrate complex workflows
-3. **Amazon EventBridge**: Route events to different services
-4. **Amazon SQS**: Queue events for asynchronous processing
-
----
-
 ## Cost Estimate
 
 **AWS Free Tier eligible:**
@@ -747,9 +736,3 @@ Okta has a limited number of event hook endpoints. To scale this integration:
 ## License
 
 MIT License - Feel free to use and modify for your needs.
-
----
-
-## Contributing
-
-Found an issue or have a suggestion? Open an issue or pull request!
