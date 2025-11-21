@@ -1,0 +1,73 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowIAMUserDeletion",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteUser",
+        "iam:GetUser",
+        "iam:ListGroupsForUser",
+        "iam:RemoveUserFromGroup",
+        "iam:ListAttachedUserPolicies",
+        "iam:DetachUserPolicy",
+        "iam:ListUserPolicies",
+        "iam:DeleteUserPolicy",
+        "iam:ListMFADevices",
+        "iam:DeactivateMFADevice",
+        "iam:DeleteVirtualMFADevice",
+        "iam:ListSSHPublicKeys",
+        "iam:DeleteSSHPublicKey",
+        "iam:ListSigningCertificates",
+        "iam:DeleteSigningCertificate",
+        "iam:ListAccessKeys",
+        "iam:DeleteAccessKey",
+        "iam:DeleteLoginProfile"
+      ],
+      "Resource": "arn:aws:iam::ACCOUNT-ID:user/*",
+      "Condition": {
+        "StringLike": {
+          "iam:ResourceTag/ManagedBy": "Okta"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchMetrics",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "cloudwatch:namespace": "OktaIAMIntegration"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:REGION:ACCOUNT-ID:log-group:/aws/lambda/delete-iam-user:*"
+    },
+    {
+      "Sid": "AllowDynamoDBAuditLog",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:dynamodb:REGION:ACCOUNT-ID:table/okta-iam-audit-log",
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "dynamodb:LeadingKeys": [
+            "${aws:PrincipalTag/FunctionName}"
+          ]
+        }
+      }
+    }
+  ]
+}
