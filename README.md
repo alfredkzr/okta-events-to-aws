@@ -25,10 +25,18 @@ A tutorial on integrating Okta Event Hooks with AWS Lambda to automate IAM user 
 This tutorial demonstrates how to build an event-driven integration between Okta and AWS. When a user is suspended in Okta, an event hook triggers an AWS Lambda function that automatically deletes the corresponding IAM user.
 
 **Why build this?**
-- **Cost savings**: Okta Workflows can be expensive
-- **Automation**: Reduce manual IAM user management
-- **Security**: Automatically revoke AWS access when users are suspended
-- **Learning**: Understand event-driven architectures
+- **Demonstrate Automation**: Learn how to trigger AWS actions from Okta events
+- **Event-Driven Architecture**: Understand how to build secure webhooks with API Gateway and Lambda
+- **Security Automation**: Example of how to automate security responses
+
+> **💡 Real World Context**: 
+> This tutorial uses "Deleting IAM Users" as a tangible example to demonstrate the integration. In a modern production environment, you should typically use **AWS IAM Identity Center (SSO)** for workforce access rather than managing individual IAM users. 
+>
+> However, the **patterns** shown here (Event Hooks → API Gateway → Lambda) are applicable to many real-world scenarios, such as:
+> - Triggering forensic analysis when a user reports suspicious activity
+> - Rotating secrets or keys based on Okta events
+> - Updating database permissions or other internal tools
+> - Sending custom notifications to Slack/Teams
 
 **What you'll build:**
 1. AWS Lambda functions to process Okta events
