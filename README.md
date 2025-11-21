@@ -98,6 +98,8 @@ This tutorial demonstrates how to build an event-driven integration between Okta
 
 We need three Lambda functions:
 
+![Lambda Functions Overview](AWS/screenshots/lambda-functions.png)
+
 #### 1.1 Event Hook Verifier (One-time verification)
 
 This Lambda handles Okta's one-time verification challenge.
@@ -165,6 +167,8 @@ cd ..
 
 #### 2.1 Create REST API
 
+![API Gateway Overview](AWS/screenshots/rest-api.png)
+
 ```bash
 # Create API
 API_ID=$(aws apigateway create-rest-api \
@@ -193,6 +197,8 @@ RESOURCE_ID=$(aws apigateway create-resource \
 ```
 
 #### 2.2 Create Authorizer
+
+![API Authorizer](AWS/screenshots/api-authoriser.png)
 
 ```bash
 AUTHORIZER_ID=$(aws apigateway create-authorizer \
@@ -309,6 +315,8 @@ aws lambda add-permission \
    - **Authentication field**: `authorizationToken`
    - **Authentication secret**: (you'll set this after creating the AWS secret)
 
+![Okta Event Hook Setup](Okta/okta-event-hook.png)
+
 ### Step 2: Verify Event Hook
 
 Click **Verify** to test the endpoint. This will:
@@ -316,11 +324,15 @@ Click **Verify** to test the endpoint. This will:
 - Your verifier Lambda will return the challenge
 - Okta will confirm the endpoint is valid
 
+![Verify Event Hook](Okta/okta-verify-event-hook.png)
+
 ### Step 3: Subscribe to Events
 
 1. In the Event Hook configuration, click **Subscribe to events**
 2. Select: **User suspended** (`user.lifecycle.suspend`)
 3. Click **Save**
+
+![Subscribe to Events](Okta/okta-event-subscription.png)
 
 Your event hook is now active!
 
@@ -464,6 +476,8 @@ aws logs filter-log-events \
   "details": "User deleted successfully"
 }
 ```
+
+![IAM User Deleted Log](AWS/screenshots/iam-user-deleted.png)
 
 ---
 
