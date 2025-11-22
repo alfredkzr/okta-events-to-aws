@@ -1,12 +1,15 @@
 import json
 import boto3
 import os
+import base64
+import hmac
 from botocore.exceptions import ClientError
 
 def get_secret():
     """
     Retrieve the authorization secret from AWS Secrets Manager.
     Set the SECRET_NAME environment variable in your Lambda configuration.
+    The secret must be stored as JSON with a 'token' key.
     """
     secret_name = os.environ.get('SECRET_NAME', 'okta-event-hook-secret')
     region_name = os.environ.get('AWS_REGION', 'ap-southeast-1')
@@ -26,8 +29,9 @@ def get_secret():
             secret = json.loads(get_secret_value_response['SecretString'])
             return secret.get('token', secret.get('authorizationToken', ''))
         else:
-            # Binary secret (less common)
-            return get_secret_value_response['SecretBinary']
+            # Binary secret (less common) - convert to base64 string
+            binary_secret = get_secret_value_response['SecretBinary']
+            return base64.b64encode(binary_secret).decode('utf-8')
     except ClientError as e:
         print(f"Error retrieving secret: {e}")
         raise e
@@ -50,7 +54,6 @@ def lambda_handler(event, context):
             expected_secret = get_secret()
             
             # 4 - Compare the tokens securely (timing-attack resistant)
-            import hmac
             provided_token = event['authorizationToken']
             
             if hmac.compare_digest(provided_token, expected_secret):
@@ -64,11 +67,10 @@ def lambda_handler(event, context):
             auth = 'Deny'
     
     # 5 - Construct and return the response to either allow or deny the permission to invoke the API.
-    # TODO - Please change the ARN to your APIGW POST method instead.
-    # You can also use environment variables for the ARN
+    # For tutorial: You can set API_GATEWAY_ARN as an environment variable, or update the default below
     api_gateway_arn = os.environ.get(
         'API_GATEWAY_ARN',
-        'arn:aws:execute-api:ap-southeast-1:AWS-ACCOUNT-NUMBER:pk6s3cmxr4/*/POST/suspend-iam-user'
+        'arn:aws:execute-api:us-east-1:YOUR-ACCOUNT-ID:YOUR-API-ID/*/POST/delete-iam-user'
     )
     
     authResponse = {

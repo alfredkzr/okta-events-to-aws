@@ -5,6 +5,16 @@ def lambda_handler(event, context):
     """
     Handle Okta Event Hook verification challenge.
     This is called once during the initial setup to verify endpoint ownership.
+    
+    SECURITY NOTE: This endpoint is intentionally unauthenticated to allow Okta's
+    verification process. This is expected behavior per Okta's Event Hook specification.
+    The endpoint should only be accessible via GET method and should be rate-limited
+    at the API Gateway level. After initial verification, this endpoint is rarely used.
+    
+    The verification process works as follows:
+    1. Okta sends a GET request with X-Okta-Verification-Challenge header
+    2. This Lambda returns the challenge value in the response
+    3. Okta verifies the response matches the challenge to confirm endpoint ownership
     """
     print(f"Received verification event: {json.dumps(event)}")
     

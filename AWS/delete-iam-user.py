@@ -5,6 +5,30 @@ import os
 from datetime import datetime
 from botocore.exceptions import ClientError
 
+def verify_user_tag(username):
+    """
+    Verify that the user has the required ManagedBy=Okta tag (optional check).
+    This is only enforced if the IAM policy requires it. For tutorials, you can skip this.
+    """
+    # Optional: Uncomment to enforce tag requirement
+    # iam = boto3.client('iam')
+    # try:
+    #     user_tags = iam.list_user_tags(UserName=username)
+    #     managed_by_tag = next(
+    #         (tag['Value'] for tag in user_tags.get('Tags', []) 
+    #          if tag['Key'] == 'ManagedBy' and tag['Value'] == 'Okta'),
+    #         None
+    #     )
+    #     if not managed_by_tag:
+    #         raise ValueError(f"User {username} does not have required ManagedBy=Okta tag")
+    #     return True
+    # except ClientError as e:
+    #     error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+    #     if error_code == 'NoSuchEntity':
+    #         raise
+    #     raise ValueError(f"Error verifying user tag: {error_code}")
+    return True  # Skip tag check for tutorial simplicity
+
 def validate_username(username):
     """
     Validate that the username meets AWS IAM username requirements.
@@ -279,7 +303,7 @@ def lambda_handler(event, context):
             if 'target' not in okta_event or not okta_event['target']:
                 raise ValueError("Event missing 'target' field")
             
-            username_to_delete = okta_event['target'][0].get('alternateId', '')
+            username_to_delete = okta_event['target'][0].get('alternateId', '').strip()
             
             if not username_to_delete:
                 raise ValueError("Unable to extract username from event")
@@ -318,6 +342,23 @@ def lambda_handler(event, context):
                 })
                 continue
             
+            # Optional: Verify user tag (commented out for tutorial simplicity)
+            # Uncomment if you want to enforce the ManagedBy=Okta tag requirement
+            # try:
+            #     verify_user_tag(username_to_delete)
+            # except ValueError as e:
+            #     error_msg = f"Tag validation failed: {str(e)}"
+            #     print(f"ERROR: {error_msg}")
+            #     log_audit_event(username_to_delete, 'DELETE_ATTEMPT', 'BLOCKED', error_msg)
+            #     publish_cloudwatch_metric('ProtectedUserDeletionAttempt')
+            #     results.append({
+            #         'event_index': idx,
+            #         'username': username_to_delete,
+            #         'status': 'blocked',
+            #         'reason': 'Missing required ManagedBy=Okta tag'
+            #     })
+            #     continue
+            
             # Log the deletion attempt
             log_audit_event(username_to_delete, 'DELETE_START', 'IN_PROGRESS', f'Okta event: {event_type}')
             
@@ -347,7 +388,14 @@ def lambda_handler(event, context):
         except Exception as e:
             error_msg = f"Error processing event {idx}: {str(e)}"
             print(f"ERROR: {error_msg}")
-            username = okta_event.get('target', [{}])[0].get('alternateId', 'UNKNOWN') if 'target' in okta_event else 'UNKNOWN'
+            # Safely extract username for logging
+            try:
+                if 'target' in okta_event and okta_event['target'] and len(okta_event['target']) > 0:
+                    username = okta_event['target'][0].get('alternateId', 'UNKNOWN')
+                else:
+                    username = 'UNKNOWN'
+            except:
+                username = 'UNKNOWN'
             log_audit_event(username, 'DELETE_FAILED', 'ERROR', error_msg)
             publish_cloudwatch_metric('IAMUserDeletionFailed')
             results.append({
